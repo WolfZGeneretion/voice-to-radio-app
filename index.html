@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎙️ Voice to Radio - Effetto Radio Anni 20</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 50px 40px;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #bbb;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        #powerBtn {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid #ffd700;
+            background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
+            cursor: pointer;
+            font-size: 4em;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            display: block;
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #powerBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ffd700;
+        }
+
+        #powerBtn:active {
+            transform: scale(0.95);
+        }
+
+        .status-container {
+            margin: 30px 0 20px;
+        }
+
+        #statusText {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #aaa;
+            transition: all 0.3s ease;
+            min-height: 40px;
+        }
+
+        #statusText.on {
+            color: #ffeb3b;
+            animation: pulse 1s infinite;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.8);
+        }
+
+        #label {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider-label {
+            font-size: 0.9em;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="range"] {
+            width: 200px;
+            height: 6px;
+            background: #444;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #ffd700;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #ffd700;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .value-display {
+            font-size: 0.85em;
+            color: #bbb;
+            min-width: 40px;
+        }
+
+        .info-box {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #ffd700;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: left;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #ddd;
+        }
+
+        .info-box h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff9999;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9em;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            #powerBtn {
+                width: 140px;
+                height: 140px;
+                font-size: 3em;
+            }
+
+            input[type="range"] {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎙️ Voice to Radio</h1>
+        <p class="subtitle">Trasforma la tua voce in effetto radio anni 20</p>
+
+        <button id="powerBtn">⚡</button>
+
+        <div class="status-container">
+            <div id="statusText">⚫ Spento</div>
+            <div id="label">ACCENDI</div>
+        </div>
+
+        <div class="controls" id="controls" style="display: none;">
+            <div class="slider-group">
+                <label class="slider-label">Distorsione</label>
+                <input type="range" id="distortionSlider" min="0" max="100" value="50">
+                <span class="value-display" id="distortionValue">50</span>
+            </div>
+
+            <div class="slider-group">
+                <label class="slider-label">Compressione</label>
+                <input type="range" id="compressionSlider" min="0" max="20" value="12" step="0.5">
+                <span class="value-display" id="compressionValue">12</span>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="info-box">
+            <h3>📖 Come Usare</h3>
+            <ul>
+                <li>✓ Clicca il pulsante per iniziare la registrazione</li>
+                <li>✓ Parla nel microfono</li>
+                <li>✓ Ascolta l'effetto radio in tempo reale</li>
+                <li>✓ Regola i parametri per personalizzare il suono</li>
+                <li>✓ Clicca di nuovo per fermare</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ==================== VARIABILI GLOBALI ====================
+        let audioCtx = null;
+        let micStream = null;
+        let isRecording = false;
+        let audioNodes = {
+            source: null,
+            highPass: null,
+            lowPass: null,
+            distortion: null,
+            compressor: null,
+            analyser: null
+        };
+
+        // ==================== INIZIALIZZAZIONE ====================
+        document.getElementById('powerBtn').addEventListener('click', toggleRadio);
+
+        // Event listener per i slider
+        document.getElementById('distortionSlider')?.addEventListener('input', updateDistortion);
+        document.getElementById('compressionSlider')?.addEventListener('input', updateCompression);
+
+        // Cleanup quando chiude la pagina
+        window.addEventListener('beforeunload', () => {
+            stopRadio();
+        });
+
+        // ==================== FUNZIONI PRINCIPALI ====================
+        async function toggleRadio() {
+            if (isRecording) {
+                stopRadio();
+            } else {
+                startRadio();
+            }
+        }
+
+        async function startRadio() {
+            try {
+                clearError();
+
+                // Inizializza AudioContext una sola volta
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                // Riprendi AudioContext se sospeso
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
+                }
+
+                // Richiedi accesso al microfono
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    }
+                });
+
+                // Crea i nodi audio
+                createAudioGraph();
+
+                isRecording = true;
+                updateUI(true);
+                document.getElementById('controls').style.display = 'flex';
+
+            } catch (err) {
+                console.error('Errore:', err);
+                isRecording = false;
+                updateUI(false);
+                showError(`❌ Errore: ${err.name} - ${err.message}`);
+            }
+        }
+
+        function stopRadio() {
+            try {
+                // Ferma il microfono
+                if (micStream) {
+                    micStream.getTracks().forEach(track => track.stop());
+                    micStream = null;
+                }
+
+                // Ferma l'AudioContext
+                if (audioCtx && audioCtx.state === 'running') {
+                    audioCtx.suspend();
+                }
+
+                isRecording = false;
+                updateUI(false);
+                document.getElementById('controls').style.display = 'none';
+            } catch (err) {
+                console.error('Errore durante lo stop:', err);
+            }
+        }
+
+        // ==================== GRAFO AUDIO ====================
+        function createAudioGraph() {
+            try {
+                // Sorgente dal microfono
+                audioNodes.source = audioCtx.createMediaStreamSource(micStream);
+
+                // Analizzatore (per future visualizzazioni)
+                audioNodes.analyser = audioCtx.createAnalyser();
+                audioNodes.analyser.fftSize = 2048;
+
+                // Filtro passa-alto (rimuove i bassi - tipico radio anni 20)
+                audioNodes.highPass = audioCtx.createBiquadFilter();
+                audioNodes.highPass.type = 'highpass';
+                audioNodes.highPass.frequency.value = 300;
+                audioNodes.highPass.Q.value = 0.5;
+
+                // Filtro passa-basso (rimuove gli alti)
+                audioNodes.lowPass = audioCtx.createBiquadFilter();
+                audioNodes.lowPass.type = 'lowpass';
+                audioNodes.lowPass.frequency.value = 3000;
+                audioNodes.lowPass.Q.value = 0.5;
+
+                // Compressore (effetto tipico delle radio)
+                audioNodes.compressor = audioCtx.createDynamicsCompressor();
+                audioNodes.compressor.threshold.value = -30;
+                audioNodes.compressor.knee.value = 40;
+                audioNodes.compressor.ratio.value = 12;
+                audioNodes.compressor.attack.value = 0.003;
+                audioNodes.compressor.release.value = 0.25;
+
+                // Waveshaper (distorsione)
+                audioNodes.distortion = audioCtx.createWaveShaper();
+                audioNodes.distortion.curve = makeDistortionCurve(50);
+                audioNodes.distortion.oversample = '4x';
+
+                // Connetti i nodi in cascata
+                audioNodes.source.connect(audioNodes.analyser);
+                audioNodes.analyser.connect(audioNodes.highPass);
+                audioNodes.highPass.connect(audioNodes.lowPass);
+                audioNodes.lowPass.connect(audioNodes.compressor);
+                audioNodes.compressor.connect(audioNodes.distortion);
+                audioNodes.distortion.connect(audioCtx.destination);
+
+                console.log('✓ Grafo audio creato con successo');
+            } catch (err) {
+                console.error('Errore nella creazione del grafo audio:', err);
+                throw err;
+            }
+        }
+
+        // ==================== EFFETTI ====================
+        function makeDistortionCurve(amount) {
+            const nSamples = 44100;
+            const curve = new Float32Array(nSamples);
+
+            for (let i = 0; i < nSamples; i++) {
+                const x = (i * 2) / nSamples - 1;
+                curve[i] = ((3 + amount) * x * 20 * (Math.PI / 180)) /
+                    (Math.PI + amount * Math.abs(x));
+            }
+
+            return curve;
+        }
+
+        function updateDistortion(e) {
+            if (!audioNodes.distortion) return;
+
+            const amount = parseInt(e.target.value);
+            audioNodes.distortion.curve = makeDistortionCurve(amount);
+            document.getElementById('distortionValue').innerText = amount;
+        }
+
+        function updateCompression(e) {
+            if (!audioNodes.compressor) return;
+
+            const ratio = parseFloat(e.target.value);
+            audioNodes.compressor.ratio.value = ratio;
+            document.getElementById('compressionValue').innerText = ratio;
+        }
+
+        // ==================== UI ====================
+        function updateUI(on) {
+            const btn = document.getElementById('powerBtn');
+            const status = document.getElementById('statusText');
+            const label = document.getElementById('label');
+
+            if (on) {
+                status.innerText = "🔴 IN TRASMISSIONE...";
+                status.className = "on";
+                label.innerText = "SPEGNI";
+                btn.style.boxShadow = "0 0 40px #ffeb3b";
+            } else {
+                status.innerText = "⚫ SPENTO";
+                status.className = "";
+                label.innerText = "ACCENDI";
+                btn.style.boxShadow = "0 0 0 3px rgba(255, 215, 0, 0.2)";
+            }
+        }
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorMessage');
+            errorBox.innerText = message;
+            errorBox.classList.add('show');
+
+            // Auto-nascondi dopo 5 secondi
+            setTimeout(clearError, 5000);
+        }
+
+        function clearError() {
+            const errorBox = document.getElementById('errorMessage');
+            errorBox.classList.remove('show');
+        }
+    </script>
+</body>
+</html>
